@@ -26,8 +26,15 @@ document.addEventListener("DOMContentLoaded", () => {
           participantsHTML = `
             <div class="participants-section">
               <strong>Participants:</strong>
-              <ul class="participants-list">
-                ${details.participants.map(p => `<li>${p}</li>`).join("")}
+              <ul class="participants-list" style="list-style-type: none;">
+                ${details.participants.map(p => `
+                  <li style="display: flex; align-items: center;">
+                    <span>${p}</span>
+                    <button style="margin-left: 8px; background: none; border: none; cursor: pointer; font-size: 1em;" title="Eliminar participante" onclick="removeParticipant(this)">
+                      🗑️
+                    </button>
+                  </li>
+                `).join("")}
               </ul>
             </div>
           `;
@@ -38,6 +45,11 @@ document.addEventListener("DOMContentLoaded", () => {
               <span class="no-participants">No participants yet</span>
             </div>
           `;
+        }
+        
+        function removeParticipant(button) {
+          const li = button.parentElement;
+          li.parentElement.removeChild(li);
         }
 
         activityCard.innerHTML = `
@@ -83,6 +95,8 @@ document.addEventListener("DOMContentLoaded", () => {
         messageDiv.textContent = result.message;
         messageDiv.className = "success";
         signupForm.reset();
+        // Actualizar la lista de actividades tras registro exitoso
+        fetchActivities();
       } else {
         messageDiv.textContent = result.detail || "An error occurred";
         messageDiv.className = "error";
@@ -90,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       messageDiv.classList.remove("hidden");
 
-      // Hide message after 5 seconds
+      // Ocultar mensaje después de 5 segundos
       setTimeout(() => {
         messageDiv.classList.add("hidden");
       }, 5000);
